@@ -33,3 +33,6 @@ Si ya terminaste o son las 10:00 asegurate de seguir los siguientes pasos para l
 2. Realizar un commit a tu repo con un mensaje con tu nombre completo
 3. Realizar un push a tu repositorio
 4. Realizar un pull request a mi repositorio
+
+
+## 
