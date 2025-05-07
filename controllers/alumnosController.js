@@ -1,4 +1,5 @@
 import Alumno from "../models/Alumno.js"
+import Sales from "../models/Sales.js";
 import bcrypt from "bcryptjs";
 
 export const home = (req, res) => {
@@ -24,7 +25,7 @@ export const getAlumnosById = async (req, res) => {
             res.status(404).json({ error: 'Alumno no encontrado'})
         }
     } catch (error) {
-        res.status(500).json({ error: "ID Invalido"})
+        res.status(500).json({ error: "ID Alumno Invalido"})
     }
 
 }
@@ -37,8 +38,8 @@ export const CrearAlumno = async (req, res) => {
     //     reqQuery: req.query,
     // })
 
-    const { nombre, edad, email, password } = req.body;
-    if(!nombre || !edad || !email || !password){
+    const {id, nombre, edad, email, password } = req.body;
+    if(!id || !nombre || !edad || !email || !password){
         return res.status(400).json({error: "Faltan datos"})
     }
 
@@ -47,6 +48,7 @@ export const CrearAlumno = async (req, res) => {
     // const comparada = await bcrypt.compare(password, hashedPassword)
     
     const alumno = {
+        id,
         nombre,
         edad,
         email,
@@ -62,6 +64,44 @@ export const CrearAlumno = async (req, res) => {
     
 }
 
+export const EditarNombreDeAlumnoById = async (req, res) => {
+    const { id } = req.params;
+    const { nombre } = req.body;
+
+    if (!nombre) {
+        return res.status(400).json({ error: "Debe enviar el nombre" });
+    }
+
+    try {
+        const alumno = await Alumno.findById(id);
+
+        if (!alumno) {
+            return res.status(404).json({ error: "Alumno no encontrado" });
+        }
+
+        alumno.nombre = nombre;
+
+        const alumnoActualizado = await alumno.save();
+        res.json(alumnoActualizado);
+
+    } catch (error) {
+        res.status(500).json({ error: "Error al actualizar el nombre"});
+    }
+}
+
+export const getAlumnosSinCompras = async (req, res) => {
+    try {
+        const alumnos = await Alumno.find();
+        const ventas = await Sales.find({}, 'idAlumno');
+        const idsConCompra = ventas.map(e => e.idAlumno);
+        const alumnosSinCompras = alumnos.filter(a => !idsConCompra.includes(a.id));
+        res.json(alumnosSinCompras);
+    } catch (error) {
+        res.status(500).json({ error: "Error al buscar alumnos sin compras" });
+    }
+};
+
+/*
 export const agregarPokemon = async (req, res) => {
 
     // req.query = ??
@@ -91,3 +131,4 @@ async function obtenerPokemonNombre(id){
 }
     
 }
+*/
