@@ -35,4 +35,7 @@ Si ya terminaste o son las 10:00 asegurate de seguir los siguientes pasos para l
 4. Realizar un pull request a mi repositorio
 
 
-## 
+## Joaquin Darquier
+## .env 
+PORT=3000
+MONGODB_URI=mongodb+srv://usuario1:apY0EWlPwUp2Vz9p@tp2.hhsg6sa.mongodb.net/?retryWrites=true&w=majority&appName=TP2
