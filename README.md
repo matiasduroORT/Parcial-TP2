@@ -1,38 +1,292 @@
-# TALLER DE PROGRAMACION 2
+Este readme corresponde a las pruebas que fui haciendo del proyecto.
 
-## Instrucciones de resolución de examen
+Ivan Agustin Zarate
 
-Es tu primer día en [tecnoshare.com](http://tecnoshare.com) luego de un intenso entrenamiento de 10 semanas por fin tenes la oportunidad de mostrar lo que aprendiste, y tu potencial como desarrollador backend en nodejs con express y mongodb.
+TP2-C
 
-Luego de abrir el correo encuentras un mail de tu Líder Técnico con tu primera asignación!! 💪
+Se implementaron los siguientes endpoints
 
-> Bienvenid@! estuvimos esperando por horas que llegares, tenemos varias tareas criticas y prioritarias en nuestro backlog. Por favor presta mucha atención a las instrucciones. No dudes en preguntarme cualquier cosa, aunque generalmente estoy muy ocupado resolviendo problemas heredados de las rotaciones de los desarrolladores.
-
-> En el presente repositorío encontrarás un proyecto de nodejs que ya tiene codigo base del backend con el que vamos a trabajar. Te aconsejo que sigas los siguientes pasos para armar tu entorno de trabajo.
-
-
-> 1. Realizar un Fork del presente repositorio
-> 2. Realizar un clone del presente repositorio
-> 3. Instalar las dependencias
-> 4. Solicitar las variables de entorno que contiene la conexion string a mongodb (antes de preguntar, revisa el chat, seguro estan ahí)
-> 5. Ejecutar el servidor web de la api REST con el script de npm start-dev si queres trabajar con nodemon (tendrías que instalarlo) con start solo, tambien funciona.
-> 6. Proba el endpoint que ya se encuentra desarrollado: /api/alumnos debería retornar un json con los alumnos. Sí por algun motivo no llegase a funcionar, solicita asistencia.
-
-> ### TUS TAREAS SON LAS SIGUIENTES POR ORDEN DE PRIORIDAD
->
-> 1. Necesitamos endpoints que nos permita crear una venta (**sales**) particular por \_id de alumno, y otro que nos permita obtener todas las ventas (**sales**) y tambien filtrada por el id de la misma
-> 2. Necesitamos un endpoint que nos permita crear negocios, y obtenerlos filtrandolos por una propiedad que tenga (**storeLocation**). Por emjemplo todas las ventas de las tiendas en Buenos Aires
-> 3. El equipo de frontend esta preparando una pagina que permita modificar el nombre de un alumno, crea un endpoint para segun el id de un alumno, enviarle el nombre y modificarlo 
-> 4. Recientemente nos llegó un requerimiento para verificar que alumnos todavia no hicieron una compra, genera un endpoint que retorne todos los alumnos que su id no aparezca en la lista ventas
-
-## Intrucciones para la entrega
-
-Si ya terminaste o son las 10:00 asegurate de seguir los siguientes pasos para la entrega:
-
-1. Completar el listado de endpoints, especificando parametros si los hubiera, mas abajo en este mismo archivo.
-2. Realizar un commit a tu repo con un mensaje con tu nombre completo
-3. Realizar un push a tu repositorio
-4. Realizar un pull request a mi repositorio
+*Ventas*
+POST /api/ventas - Crear una venta asociada a un alumno
+GET /api/ventas - Obtener todas las ventas
+GET /api/ventas/:id - Obtener una venta específica por ID
+*Negocios*
+POST /api/negocios - Crear un nuevo negocio
+GET /api/negocios/ubicacion/:ubicacion - Obtener negocios filtrados por ubicación
+*Alumnos*
+PUT /api/alumnos/:id - Actualizar el nombre de un alumno
+GET /api/alumnos-sin-compras - Obtener alumnos que no han realizado compras
 
 
-## 
+XOXOXOXOXXOXOXOXOXOXOXOXOXOXO Ventas XOXOXOXOXOXOXOXOXOXOXOXXOXOXOXOXOXOX
+
+1. Creando una venta con ID de alumno válido
+
+curl -X POST http://localhost:3000/api/ventas \
+  -H "Content-Type: application/json" \
+  -d '{
+    "alumnoId": "681be42d3132102e42988a09",
+    "monto": 1500,
+    "descripcion": "Curso de en ORT de java",
+    "estado": "pendiente"
+  }'
+
+## Resultado 
+
+  curl -X POST http://localhost:3000/api/ventas \
+  -H "Content-Type: application/json" \
+  -d '{
+    "alumnoId": "681be42d3132102e42988a09",
+    "monto": 1500,
+    "descripcion": "Curso de en ORT de java",
+    "estado": "pendiente"
+  }'
+
+  2. Intentando crear una venta con ID de alumno inválido
+     Queria probar qué pasaba si mandaba cualquier cosa como ID:
+
+     curl -X POST http://localhost:3000/api/ventas \
+  -H "Content-Type: application/json" \
+  -d '{
+    "alumnoId": "10",
+    "monto": 1500,
+    "descripcion": "Curso de en ORT de java",
+    "estado": "pendiente"
+  }'
+
+## Resultado 
+
+  {"error":"Error al crear la venta"}
+
+
+  3. Obteniendo todas las ventas
+
+  Para ver si realmente se guardó, hice un GET:
+
+  curl -X GET http://localhost:3000/api/ventas
+
+
+## Resultado 
+
+  [
+  {
+    "_id": "681bebefb8ab38786d65aa7d",
+    "alumno": {
+      "_id": "681be42d3132102e42988a09",
+      "nombre": "Martin",
+      "email": "admin@admin.com"
+    },
+    "monto": 1500,
+    "descripcion": "Curso de en ORT de java",
+    "estado": "pendiente",
+    "createdAt": "2025-05-07T23:25:35.952Z",
+    "updatedAt": "2025-05-07T23:25:35.952Z",
+    "__v": 0
+  }
+]
+
+Lo bueno es que me trae los datos del alumno también, eso lo hice con el populate() que vimos en clase.
+
+4. Obteniendo una venta específica por ID
+
+También probé buscar una venta específica
+
+curl -X GET http://localhost:3000/api/ventas/681bebefb8ab38786d65aa7d
+
+## Resultado
+
+{
+  "_id": "681bebefb8ab38786d65aa7d",
+  "alumno": {
+    "_id": "681be42d3132102e42988a09",
+    "nombre": "Martin",
+    "email": "admin@admin.com"
+  },
+  "monto": 1500,
+  "descripcion": "Curso de en ORT de java",
+  "estado": "pendiente",
+  "createdAt": "2025-05-07T23:25:35.952Z",
+  "updatedAt": "2025-05-07T23:25:35.952Z",
+  "__v": 0
+}
+
+XOXOXOXOXOXOXOXXOXO   Gestión de Alumnos  XOXOXOXOXOXOXOXOXOXOXOXXOXO
+
+1. Obteniendo alumnos sin compras
+
+curl -X GET http://localhost:3000/api/alumnos-sin-compras
+
+
+## Resultado (antes de crear ventas)
+[
+  {
+    "_id": "681be42d3132102e42988a09",
+    "nombre": "Martin",
+    "edad": 40,
+    "email": "admin@admin.com",
+    "password": "123",
+    "createdAt": "2025-05-07T22:52:29.826Z",
+    "updatedAt": "2025-05-07T22:52:29.826Z",
+    "__v": 0
+  },
+  {
+    "_id": "681be42e3132102e42988a11",
+    "nombre": "Martin 2",
+    "edad": 40,
+    "email": "admin2@admin.com",
+    "password": "$2b$10$ShZDloNK3ngDjoSn0GOAOuh.oAyXwEvNfptfsV/TKzrjOWAvMsEEe",
+    "createdAt": "2025-05-07T22:52:30.229Z",
+    "updatedAt": "2025-05-07T22:52:30.229Z",
+    "__v": 0
+  }
+]
+
+2. Actualizando el nombre de un alumno
+
+curl -X PUT http://localhost:3000/api/alumnos/681be42d3132102e42988a09 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nombre": "Martín Actualizado"
+  }'
+
+## Resultado
+
+{
+  "_id": "681be42d3132102e42988a09",
+  "nombre": "Martín Actualizado",
+  "edad": 40,
+  "email": "admin@admin.com",
+  "password": "123",
+  "createdAt": "2025-05-07T22:52:29.826Z",
+  "updatedAt": "2025-05-07T23:26:41.265Z",
+  "__v": 0
+}
+
+Me di cuenta que el updatedAt se actualiza solo, eso está bueno.
+
+3. Verificando alumnos sin compras después de crear ventas
+
+Después de crear una venta para Martín, volví a probar el endpoint de alumnos sin compras:
+
+curl -X GET http://localhost:3000/api/alumnos-sin-compras
+
+## Resultado
+
+[
+  {
+    "_id": "681be42e3132102e42988a11",
+    "nombre": "Martin 2",
+    "edad": 40,
+    "email": "admin2@admin.com",
+    "password": "$2b$10$ShZDloNK3ngDjoSn0GOAOuh.oAyXwEvNfptfsV/TKzrjOWAvMsEEe",
+    "createdAt": "2025-05-07T22:52:30.229Z",
+    "updatedAt": "2025-05-07T22:52:30.229Z",
+    "__v": 0
+  }
+]
+
+Y efectivamente, Martín ya no aparece porque tiene una compra.
+
+XOXOXOXOXOXOXOXXOXO   Gestión de Negocios  XOXOXOXOXOXOXOXOXOXOXOXXOXO
+
+1. Creando negocios
+Probé crear un par de negocios con ubicaciones diferentes:
+
+curl -X POST http://localhost:3000/api/negocios \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nombre": "Academia Buenos Aires",
+    "ubicacion": "Buenos Aires",
+    "direccion": "Av. Corrientes 1234",
+    "telefono": "11-1234-5678",
+    "email": "info@academiaba.com"
+  }'
+
+  ## Resultado
+
+  {
+  "nombre": "Academia Buenos Aires",
+  "ubicacion": "Buenos Aires",
+  "direccion": "Av. Corrientes 1234",
+  "telefono": "11-1234-5678",
+  "email": "info@academiaba.com",
+  "activo": true,
+  "_id": "681bec0fb8ab38786d65aa83",
+  "createdAt": "2025-05-07T23:26:07.451Z",
+  "updatedAt": "2025-05-07T23:26:07.451Z",
+  "__v": 0
+}
+
+
+---------
+
+curl -X POST http://localhost:3000/api/negocios \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nombre": "Instituto Córdoba",
+    "ubicacion": "Córdoba",
+    "direccion": "Av. Principal 567",
+    "telefono": "351-987-6543",
+    "email": "contacto@institutocordoba.com"
+  }'
+
+
+  ## Resultado
+
+  {
+  "nombre": "Instituto Córdoba",
+  "ubicacion": "Córdoba",
+  "direccion": "Av. Principal 567",
+  "telefono": "351-987-6543",
+  "email": "contacto@institutocordoba.com",
+  "activo": true,
+  "_id": "681bec18b8ab38786d65aa85",
+  "createdAt": "2025-05-07T23:26:16.742Z",
+  "updatedAt": "2025-05-07T23:26:16.742Z",
+  "__v": 0
+}
+
+
+2. Filtrando negocios por ubicación
+
+curl -X GET http://localhost:3000/api/negocios/ubicacion/Buenos%20Aires
+
+## Resultado
+
+[
+  {
+    "_id": "681bec0fb8ab38786d65aa83",
+    "nombre": "Academia Buenos Aires",
+    "ubicacion": "Buenos Aires",
+    "direccion": "Av. Corrientes 1234",
+    "telefono": "11-1234-5678",
+    "email": "info@academiaba.com",
+    "activo": true,
+    "createdAt": "2025-05-07T23:26:07.451Z",
+    "updatedAt": "2025-05-07T23:26:07.451Z",
+    "__v": 0
+  }
+]
+
+---------
+
+curl -X GET http://localhost:3000/api/negocios/ubicacion/Córdoba
+
+## Resultado
+
+[
+  {
+    "_id": "681bec18b8ab38786d65aa85",
+    "nombre": "Instituto Córdoba",
+    "ubicacion": "Córdoba",
+    "direccion": "Av. Principal 567",
+    "telefono": "351-987-6543",
+    "email": "contacto@institutocordoba.com",
+    "activo": true,
+    "createdAt": "2025-05-07T23:26:16.742Z",
+    "updatedAt": "2025-05-07T23:26:16.742Z",
+    "__v": 0
+  }
+]
+
+

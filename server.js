@@ -1,26 +1,28 @@
-// const express = require('express')
 import express from 'express';
-import dotenv from 'dotenv'
-// const alumnosRouter = require('./routes/alumnosRoutes')
-import alumnosRouter from './routes/alumnosRoutes.js'
+import dotenv from 'dotenv';
+import alumnosRouter from './routes/alumnosRoutes.js';
+import ventasRouter from './routes/ventasRoutes.js';
+import negociosRouter from './routes/negociosRoutes.js';
 import conectarDB from './config/db.js';
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
-
+const app = express();
 const PORT = process.env.PORT || 4000;
 
-conectarDB()
+// Conexión a la base de datos
+conectarDB();
 
-console.log("EL PUERTO ES: ", PORT);
+// Middleware
+app.use(express.json()); // Para que pueda leer JSON
+
+// Rutas
+app.use("/", alumnosRouter); // Rutas para alumnos
+app.use("/", ventasRouter); // Rutas para ventas
+app.use("/", negociosRouter); // Rutas para negocios
 
 
-app.use(express.json()) // Para que pueda leer JSON
-
-app.use("/", alumnosRouter) // Manejar middlewares, nos permite conectar nuestro server
-
-
+// Iniciar el servidor
 app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`)
-})
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+});
