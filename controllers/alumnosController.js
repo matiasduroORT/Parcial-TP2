@@ -62,6 +62,8 @@ export const CrearAlumno = async (req, res) => {
     
 }
 
+
+
 export const agregarPokemon = async (req, res) => {
 
     // req.query = ??
