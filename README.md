@@ -36,3 +36,8 @@ Si ya terminaste o son las 10:00 asegurate de seguir los siguientes pasos para l
 
 
 ## 
+
+
+
+PORT=3000
+MONGODB_URI=mongodb+srv://parcial:parcial1@parcial-alonso.nsuniwv.mongodb.net/

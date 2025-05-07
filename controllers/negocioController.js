@@ -28,7 +28,8 @@ export const ObtenerNegocioPorLocalidad = async (req, res) => {
         return res.status(400).json({error: "No se encontro query parameters 'localidad'."});
     }
     try {
-        const negocios = await localidad.find({localidad: localidad});
+        console.log("Obteniendo negocios de: " + localidad);
+        const negocios = await Negocio.find({"localidad": localidad});
         res.status(200).json(negocios)
     } catch (error) {
         res.status(500).json({error: "Error al obtener negocios por localidad"});

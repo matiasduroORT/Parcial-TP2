@@ -34,7 +34,7 @@ export const ObtenerVentas = async (req, res) => {
 
 export const ObtenerVentaPorId = async (req, res) => {
     try {
-        const venta = await Venta.findById(req.params.id);
+        const venta = await Venta.findById(req.params.ventaId);
         if(venta) {
             res.status(200).json(venta);
         } else {

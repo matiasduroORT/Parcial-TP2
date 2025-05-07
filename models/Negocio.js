@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const negocioSchema = mongoose.Schema({
-    nombre: { type: Double, required: true},
+    nombre: { type: String, required: true},
     localidad: { type: String, required: true},
     direccion: { type: String, required: true}
 }, { timestamps: true })
