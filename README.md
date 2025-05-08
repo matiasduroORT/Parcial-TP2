@@ -11,9 +11,9 @@ Luego de abrir el correo encuentras un mail de tu Líder Técnico con tu primera
 > En el presente repositorío encontrarás un proyecto de nodejs que ya tiene codigo base del backend con el que vamos a trabajar. Te aconsejo que sigas los siguientes pasos para armar tu entorno de trabajo.
 
 
-> 1. Realizar un Fork del presente repositorio
-> 2. Realizar un clone del presente repositorio
-> 3. Instalar las dependencias
+> 1. Realizar un Fork del presente repositorio 
+> 2. Realizar un clone del presente repositorio 
+> 3. Instalar las dependencias 
 > 4. Solicitar las variables de entorno que contiene la conexion string a mongodb (antes de preguntar, revisa el chat, seguro estan ahí)
 > 5. Ejecutar el servidor web de la api REST con el script de npm start-dev si queres trabajar con nodemon (tendrías que instalarlo) con start solo, tambien funciona.
 > 6. Proba el endpoint que ya se encuentra desarrollado: /api/alumnos debería retornar un json con los alumnos. Sí por algun motivo no llegase a funcionar, solicita asistencia.
@@ -35,4 +35,5 @@ Si ya terminaste o son las 10:00 asegurate de seguir los siguientes pasos para l
 4. Realizar un pull request a mi repositorio
 
 
-## 
+## Nicolas Cuchero
+## PORT=3000 MONGODB_URI=mongodb+srv://cuchenico:luisbnofal11@cluster0.7wdx7fg.mongodb.net/
