@@ -7,4 +7,5 @@ const alumnoSchema = mongoose.Schema({
     password: { type: String, required: true}
 }, { timestamps: true})
 
+
 export default mongoose.model("Alumno", alumnoSchema)
