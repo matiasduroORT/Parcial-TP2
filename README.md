@@ -35,4 +35,12 @@ Si ya terminaste o son las 10:00 asegurate de seguir los siguientes pasos para l
 4. Realizar un pull request a mi repositorio
 
 
-## 
+## Alumno
+Juan Mateo Alonso de Armino
+
+## Comentarios
+- .env:
+PORT=3000
+MONGODB_URI=mongodb+srv://parcial:parcial1@parcial-alonso.nsuniwv.mongodb.net/
+- deje la db public, pero cualquier cosa si no puede conectarse me comenta y lo reviso: mateoalonsoda@gmail.com
+- deje un archivo con la collection de postman que fui haciendo para hacer pruebas
