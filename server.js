@@ -1,8 +1,8 @@
-// const express = require('express')
 import express from 'express';
 import dotenv from 'dotenv'
-// const alumnosRouter = require('./routes/alumnosRoutes')
-import alumnosRouter from './routes/alumnosRoutes.js'
+import usuariosRouter from './routes/usuariosRoutes.js';
+import negociosRouter from './routes/negociosRoutes.js';
+import ventasRouter from './routes/ventasRoutes.js';
 import conectarDB from './config/db.js';
 
 dotenv.config()
@@ -16,9 +16,12 @@ conectarDB()
 console.log("EL PUERTO ES: ", PORT);
 
 
-app.use(express.json()) // Para que pueda leer JSON
+app.use(express.json()) 
 
-app.use("/", alumnosRouter) // Manejar middlewares, nos permite conectar nuestro server
+app.use("/api/usuarios", usuariosRouter);
+app.use("/api/negocios", negociosRouter);
+app.use("/api/ventas", ventasRouter);
+
 
 
 app.listen(PORT, () => {
