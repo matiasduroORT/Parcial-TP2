@@ -1,4 +1,6 @@
 import Alumno from "../models/Alumno.js"
+import Sales from "../models/Sales.js"
+import Store from "../models/Store.js"
 import bcrypt from "bcryptjs";
 
 export const home = (req, res) => {
@@ -84,10 +86,141 @@ async function obtenerPokemonNombre(id){
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
     const data = await res.json()
     return data.name
- 
+
 } catch (error) {
     console.log("El error fue: ", );
     return null 
 }
     
 }
+
+export const crearVenta = async (req, res) => {
+    const { alumnoId } = req.params;
+    const { monto, descripcion } = req.body;
+
+    if (!monto || !descripcion) {
+        return res.status(400).json({ error: "Faltan datos para la venta" });
+    }
+
+    try {
+        const alumnoExiste = await Alumno.findById(alumnoId);
+        if (!alumnoExiste) {
+            return res.status(404).json({ error: "Alumno no encontrado" });
+        }
+
+        const nuevaVenta = await Sales.create({
+            alumnoId,
+            monto,
+            descripcion
+        });
+
+        res.status(201).json(nuevaVenta);
+    } catch (error) {
+        res.status(500).json({ error: "Error al crear la venta" });
+    }
+};
+
+export const getVentas = async (req, res) => {
+    try {
+        const ventas = await Sales.find();
+        res.json(ventas);
+    } catch (error) {
+        res.status(500).json({ error: "Error al obtener las ventas" });
+    }
+};
+
+export const getVentaById = async (req, res) => {
+    try {
+        const venta = await Sales.findById(req.params.id);
+        if (venta) {
+            res.json(venta);
+        } else {
+            res.status(404).json({ error: "Venta no encontrada" });
+        }
+    } catch (error) {
+        res.status(500).json({ error: "ID de venta inválido" });
+    }
+};
+
+// Controladores para Stores
+export const crearNegocio = async (req, res) => {
+    const { nombre, storeLocation, direccion, telefono } = req.body;
+
+    if (!nombre || !storeLocation || !direccion) {
+        return res.status(400).json({ error: "Faltan datos obligatorios" });
+    }
+
+    try {
+        const nuevoNegocio = await Store.create({
+            nombre,
+            storeLocation,
+            direccion,
+            telefono
+        });
+
+        res.status(201).json(nuevoNegocio);
+    } catch (error) {
+        res.status(500).json({ error: "Error al crear el negocio" });
+    }
+};
+
+export const getNegocios = async (req, res) => {
+    try {
+        const { storeLocation } = req.query;
+        
+        const filtro = storeLocation ? { storeLocation } : {};
+        
+        const negocios = await Store.find(filtro);
+        res.json(negocios);
+    } catch (error) {
+        res.status(500).json({ error: "Error al obtener los negocios" });
+    }
+};
+
+//Para filtrar negocios por storeLocation
+//http://localhost:3000/api/negocios?storeLocation=Buenos%20Aires
+
+// Actualizar nombre de alumno
+export const actualizarNombreAlumno = async (req, res) => {
+    const { id } = req.params;
+    const { nombre } = req.body;
+
+    if (!nombre) {
+        return res.status(400).json({ error: "El nombre es obligatorio" });
+    }
+
+    try {
+        const alumnoActualizado = await Alumno.findByIdAndUpdate(
+            id,
+            { nombre },
+            { new: true }
+        );
+
+        if (!alumnoActualizado) {
+            return res.status(404).json({ error: "Alumno no encontrado" });
+        }
+
+        res.json(alumnoActualizado);
+    } catch (error) {
+        res.status(500).json({ error: "Error al actualizar el nombre del alumno" });
+    }
+};
+
+// Obtener alumnos sin compras
+export const getAlumnosSinCompras = async (req, res) => {
+    try {
+        const alumnos = await Alumno.find();
+        
+        const ventas = await Sales.find();
+        
+        const alumnosConCompras = ventas.map(venta => venta.alumnoId.toString());
+        
+        const alumnosSinCompras = alumnos.filter(alumno => 
+            !alumnosConCompras.includes(alumno._id.toString())
+        );
+        
+        res.json(alumnosSinCompras);
+    } catch (error) {
+        res.status(500).json({ error: "Error al obtener alumnos sin compras" });
+    }
+};
