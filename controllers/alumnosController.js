@@ -1,5 +1,7 @@
 import Alumno from "../models/Alumno.js"
 import bcrypt from "bcryptjs";
+import Sales from '../models/Venta.js';
+
 
 export const home = (req, res) => {
     res.send(`<h1>Home de la API</h1>`)
@@ -61,6 +63,22 @@ export const CrearAlumno = async (req, res) => {
     }
     
 }
+
+export const getAlumnosSinVentas = async (req, res) => {
+
+const alumnos = await Alumno.find({});
+
+const alumnosSinVentas = [];
+for (const alumno of alumnos) {
+  const venta = await Sales.findOne({ idUsuario: alumno._id });
+  if (!venta) {
+    usuariosSinVentas.push(usuario);
+  }
+}
+
+res.json(alumnosSinVentas);
+}
+
 
 export const agregarPokemon = async (req, res) => {
 
