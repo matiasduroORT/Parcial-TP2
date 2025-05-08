@@ -1,4 +1,5 @@
 import Alumno from "../models/Alumno.js"
+import Sale from "../models/Sale.js"
 import bcrypt from "bcryptjs";
 
 export const home = (req, res) => {
@@ -62,32 +63,55 @@ export const CrearAlumno = async (req, res) => {
     
 }
 
-export const agregarPokemon = async (req, res) => {
 
-    // req.query = ??
-    // req.params = ??
+export const updateAlumnoNombre = async (req, res) => {
+    const { id } = req.params;
+    const { nombre } = req.body;
 
-    const alumno = alumnos.find((alumno) => alumno.id == req.params.id)   
-    
-    // hacer el fetch a la api de pokemon, segun el id de req.query
-    const nombrePokemon = obtenerPokemonNombre('??')
+    if(!nombre) {
+        return res.status(400).json({error: "El nombre es requerido"})
+    }
 
-    // alumno.pokemon = 
-
-
-
-}
-
-async function obtenerPokemonNombre(id){
     try {
+        const alumno = await Alumno.findById(id)
+        if(!alumno) {
+            return res.status(404).json({error: "Alumno no encontrado"})
+        }
 
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
-    const data = await res.json()
-    return data.name
- 
-} catch (error) {
-    console.log("El error fue: ", );
-    return null 
+        alumno.nombre = nombre;
+        await alumno.save();
+
+        res.json({
+            mensaje: "Nombre actualizado correctamente",
+            alumno
+        })
+    } catch (error) {
+        res.status(500).json({error: "Error al actualizar el nombre del alumno"})
+    }
 }
+
+
+export const getAlumnosSinCompras = async (req, res) => {
+    try {
+        
+        const ventas = await Sale.find().select('alumno');
+        const idsConVentas = ventas.map(venta => venta.alumno.toString());
+
+        
+        const alumnosSinCompras = await Alumno.find({
+            _id: { $nin: idsConVentas }
+        }).select('nombre email edad'); 
+
+        res.json({
+            total: alumnosSinCompras.length,
+            alumnos: alumnosSinCompras
+        });
+    } catch (error) {
+        res.status(500).json({error: "Error al obtener alumnos sin compras"})
+    }
+}
+
+
+
+
     
-}
