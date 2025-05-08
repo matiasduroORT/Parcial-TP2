@@ -62,32 +62,29 @@ export const CrearAlumno = async (req, res) => {
     
 }
 
-export const agregarPokemon = async (req, res) => {
+//metodo incompleto, no supe como entrar a la BD conociendo el alumno buscandolo para modificar el nombre
+//entre otras cosas que no se manejar.
+export const ModificarAlumno = async (req, res) => {  
 
-    // req.query = ??
-    // req.params = ??
+    // res.json({
+    //     reqBody: req.body,
+    //     reqParams: req.params,
+    //     reqQuery: req.query,
+    // })
+    const alumnoParaModificar = await getAlumnosById(req.params.id) 
+    const { nombre} = req.body;
+    if(!nombre || !edad || !email || !password){
+        return res.status(400).json({error: "Faltan datos"})
+    }
 
-    const alumno = alumnos.find((alumno) => alumno.id == req.params.id)   
-    
-    // hacer el fetch a la api de pokemon, segun el id de req.query
-    const nombrePokemon = obtenerPokemonNombre('??')
-
-    // alumno.pokemon = 
-
-
-
-}
-
-async function obtenerPokemonNombre(id){
-    try {
-
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
-    const data = await res.json()
-    return data.name
- 
-} catch (error) {
-    console.log("El error fue: ", );
-    return null 
-}
+    const alumno = {
+        nombre,
+    }
+      try {
+        const nuevoAlumno = await Alumno.modificar(alumno)
+        res.status(201).json(nuevoAlumno)
+    } catch (error) {
+        res.status(500).json({error: "Error al modificar el Alumno"})
+    }
     
 }
