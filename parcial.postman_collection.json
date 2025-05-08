@@ -1,0 +1,249 @@
+{
+	"info": {
+		"_postman_id": "4694d703-1adc-4b15-9ca8-708fce9c0199",
+		"name": "parcial",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "alumnos",
+			"item": [
+				{
+					"name": "obtener alumnos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/alumnos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"alumnos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "obtener alumno por id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/alumnos/681bfb2fa9c93241aa9be73b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"alumnos",
+								"681bfb2fa9c93241aa9be73b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "obtener alumno por id Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/alumnos-sin-ventas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"alumnos-sin-ventas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "modificar alumno nbombre",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"mateo alonso\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/alumnos/681bfb2fa9c93241aa9be73b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"alumnos",
+								"681bfb2fa9c93241aa9be73b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "crear alumno",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"juan\",\n    \"edad\": 27,\n    \"password\": \"password\",\n    \"email\": \"juan@mail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/alumnos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"alumnos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ventas",
+			"item": [
+				{
+					"name": "crear venta",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"concepto\": \"botines\",\n    \"precio\": 120000,\n    \"idAlumno\": \"6812c07c3667583694f34418\",\n    \"idNegocio\": \"681befc6bdff124384738680\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/ventas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"ventas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "obtener por venta por id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/ventas/681bf19c3eea2ff70d5e438d",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"ventas",
+								"681bf19c3eea2ff70d5e438d"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "negocios",
+			"item": [
+				{
+					"name": "crear negocio",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"tienda de tecnologia\",\n    \"localidad\": \"bariloche\",\n    \"direccion\": \"san martin 555\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/negocios",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"negocios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "obtener por localidad",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/negocios?localidad=buenos aires",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"negocios"
+							],
+							"query": [
+								{
+									"key": "localidad",
+									"value": "buenos aires"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
