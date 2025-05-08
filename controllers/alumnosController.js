@@ -1,5 +1,6 @@
 import Alumno from "../models/Alumno.js"
 import bcrypt from "bcryptjs";
+import Venta from "../models/Venta.js";
 
 export const home = (req, res) => {
     res.send(`<h1>Home de la API</h1>`)
@@ -25,6 +26,42 @@ export const getAlumnosById = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ error: "ID Invalido"})
+    }
+
+}
+
+export const getAlumnosSinVentas = async (req, res) => {
+    const alumnos = await Alumno.find()
+    const alumnosSinVentas = []
+
+    try {
+        for (const alumno of alumnos) {
+            const id = alumno._id
+            
+            const ventasDelAlumno = await Venta.find({idAlumno : id})
+            if(ventasDelAlumno.length === 0){
+                alumnosSinVentas.push(alumno)
+            }
+        }
+        res.status(201).json(alumnosSinVentas)
+    } catch (error) {
+        res.status(500).json({error: "Error al obtener alumnos"})
+    }
+}
+
+export const modificarAlumno = async (req, res) => {
+
+    const nuevoNombre = req.body.nombre
+    const alumno = await Alumno.findById(req.params.id)
+    if(!nuevoNombre){
+        return res.status(400).json({error: "Faltan datos"})
+    }
+
+    try {
+        alumno.nombre = nuevoNombre
+        res.status(201).json(alumno)
+    } catch (error) {
+        res.status(500).json({error: "Error al modificar Alumno"})
     }
 
 }
