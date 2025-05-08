@@ -1,5 +1,7 @@
 import Alumno from "../models/Alumno.js"
+import Venta from "../models/Venta.js"
 import bcrypt from "bcryptjs";
+import mongoose from 'mongoose';
 
 export const home = (req, res) => {
     res.send(`<h1>Home de la API</h1>`)
@@ -21,12 +23,44 @@ export const getAlumnosById = async (req, res) => {
         if(alumno){
             res.json(alumno)
         }else{
-            res.status(404).json({ error: 'Alumno no encontrado'})
+            res.status(404).json({ error: 'Alumno no encontrado', id: req.params.id})
         }
     } catch (error) {
+        console.log(error.message);
         res.status(500).json({ error: "ID Invalido"})
     }
 
+}
+
+export const ModificarNombreAlumno = async (req, res) => {
+    const { nombre } = req.body;
+    const alumnoId = req.params.alumnoId
+    console.log(nombre);
+    try {
+        console.log("Modificando alumno con id: " + alumnoId);
+        await Alumno.findOneAndUpdate({_id: alumnoId}, {nombre: nombre})
+        res.status(200).json({mensaje: "actualizado con exito"})
+    } catch (error) {
+        res.status(500).json({ error: "Error actualizando nombre."})
+    }
+}
+
+export const ObtenerAlumnosSinVentas = async (req, res) => {
+    let ventas;
+    let alumnos;
+    
+    try {
+        ventas = await Venta.find()
+        alumnos = await Alumno.find()
+    } catch(error) {
+        res.status(500).json({error: "Error al obtener data de la DB."})
+    }
+
+    const alumnosSinVentas = alumnos.filter(alumno => {
+        const venta = ventas.find(venta => venta.idAlumno == alumno.id)
+        return venta == null
+    })
+    res.status(200).json(alumnosSinVentas);
 }
 
 export const CrearAlumno = async (req, res) => {  
