@@ -1,4 +1,5 @@
 import Alumno from "../models/Alumno.js"
+import Sales from '../models/sales.js'
 import bcrypt from "bcryptjs";
 
 export const home = (req, res) => {
@@ -62,6 +63,57 @@ export const CrearAlumno = async (req, res) => {
     
 }
 
+export const cambiarNombreAlumno = async(req, res) =>{
+    //Primero obtengo el alumno por el ID
+    const alumno = await Alumno.findById(req.params.id)
+
+    //Compruebo que exista el alumno.
+    if(!alumno){
+        return res.status(500).json({error: `No se encontro al alumno con id: ${req.params.id}`})
+    }
+
+    //REcibo el nombre desde los querys.
+    const nuevoNombre = req.query.nombre;
+
+    //compruebo que no sea un falsy.
+    if(!nuevoNombre) {
+        return res.status(500).json({error: "Debe ingresar un nombre."})
+    }
+
+    //Intento realizar un update del alumno.
+    try {
+        //Uso el Id del alumno y paso el nuevo nombre para que realice la actualización.
+        const updateAlumno = await Alumno.findOneAndUpdate({_id: req.params.id}, { $set: {nombre: nuevoNombre}})
+        res.status(200).json(updateAlumno);
+
+    } catch (error) {
+        //Si no funciona lanzo un error.
+        res.status(500).json({error: "No se pudo actualizar el nombre del alumno."})
+    }
+}
+
+
+export const alumnosSinCompras = async(req, res) => {
+    
+    try {
+
+        
+        const ventas = await Sales.find();
+        const listaDeAlumnos = await Alumno.find((alumno) => ventas.forEach(venta => {
+            if(alumno.id == venta.idComprador){
+                return alumno;
+            }
+        }));
+
+         res.status(200).json(listaDeAlumnos);
+
+    } catch (error) {
+        res.sttus(500).json({error: "Ocurrio un error al cargar los alumnos."})
+    }
+    //Primero obtengo los alumnos
+    
+}
+
 export const agregarPokemon = async (req, res) => {
 
     // req.query = ??
@@ -77,6 +129,7 @@ export const agregarPokemon = async (req, res) => {
 
 
 }
+
 
 async function obtenerPokemonNombre(id){
     try {
