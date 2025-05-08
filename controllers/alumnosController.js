@@ -96,7 +96,22 @@ export const ModificarNombre = async (req, res) => {
     
 }
 
+export const getAlumnosSinCompras = async (req, res) => {
+    try {
+        const alumnos = await Alumno.find();
+        const sales = await Sale.find();
+        
+        const idsConVentas = ventas.map(venta => venta.idUsuario.toString());
 
+        const alumnosSinCompras = alumnos.filter(alumno => {
+            return !idsConVentas.includes(alumno._id.toString());
+        });
+
+        res.status(200).json(alumnosSinCompras);
+    } catch (error) {
+        res.status(500).json({ error: "Ocurrio un error" });
+    }
+}
 
 
 
