@@ -1,4 +1,5 @@
 import Alumno from "../models/Alumno.js"
+import Sale from "../models/Sales.js";
 import bcrypt from "bcryptjs";
 
 export const home = (req, res) => {
@@ -62,6 +63,50 @@ export const CrearAlumno = async (req, res) => {
     
 }
 
+
+export const actualizarNombreUsuario = async (req, res) => {
+  try {
+    const { id } = req.params; 
+    const { nombre } = req.body;
+
+    
+    const usuarioActualizado = await Alumno.findByIdAndUpdate(
+      id, 
+      { nombre },  
+      { new: true } 
+    );
+
+   
+    if (!usuarioActualizado) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+
+    res.json(usuarioActualizado);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al actualizar el nombre', error: error.message });
+  }
+};
+
+export const alumnosSinCompras = async (req, res) => {
+    try {
+      const ventas = await Sale.find().select('userId');
+      const idsConVenta = ventas.map(venta => venta.userId);
+  
+      const alumnos = await Alumno.find({
+        _id: { $nin: idsConVenta }
+      });
+  
+      if (alumnos.length === 0) {
+        return res.status(404).json({ mensaje: 'No se encontraron alumnos sin compras' });
+      }
+
+      res.json(alumnos);
+    } catch (error) {
+      res.status(500).json({ mensaje: 'Error al buscar alumnos sin compras', error: error.message });
+    }
+};
+
+
 export const agregarPokemon = async (req, res) => {
 
     // req.query = ??
@@ -89,5 +134,5 @@ async function obtenerPokemonNombre(id){
     console.log("El error fue: ", );
     return null 
 }
-    
+
 }
