@@ -1,4 +1,4 @@
-import Negocio from "../models/Negocio"
+import Negocio from "../models/Negocio.js"
 
 //TO-DO:
 export const CreateNegocio = async (req, res) => { 

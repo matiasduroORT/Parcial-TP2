@@ -1,4 +1,6 @@
 import Sale from "../models/Sale.js"
+import Alumno from "../models/Alumno.js"
+
 
 //TO-DO:
 export const CreateSale = async (req, res) => {  
@@ -8,9 +10,9 @@ export const CreateSale = async (req, res) => {
         return res.status(400).json({error: "Faltan datos para crear la venta"})
     }
 
-    const alumnoBuscado = alumnos.findById(req.params.id)   
+    const alumnoBuscado = alumnos.findById(idUsuario)   
     if(!alumnoBuscado){
-        res.status(500).json({ error: "ID Invalido"})
+        return res.status(500).json({ error: "ID Invalido"})
     }
     
     const sale = {
@@ -41,4 +43,33 @@ export const getSalesById = async (req, res) => {
         res.status(500).json({ error: "ID Invalido"})
     }
 
+}
+
+
+export const getSales = async (req, res) => {
+    try {
+        const sales = await Sale.find()
+        res.json(sales)
+    } catch (error) {
+        res.status(500).json({error: "Error al obtener las ventas"})
+    }
+}
+
+
+
+export const getAlumnosSinCompras = async (req, res) => {
+    try {
+        const alumnos = await Alumno.find();
+        const sales = await Sale.find();
+        
+        const idsConVentas = ventas.map(venta => venta.idUsuario.toString());
+
+        const alumnosSinCompras = alumnos.filter(alumno => {
+            return !idsConVentas.includes(alumno._id.toString());
+        });
+
+        res.status(200).json(alumnosSinCompras);
+    } catch (error) {
+        res.status(500).json({ error: "Ocurrio un error" });
+    }
 }

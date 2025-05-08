@@ -2,7 +2,7 @@ import express from 'express';
 import {
     CreateNegocio,
     getNegocios,
-} from '../controllers/negociosController'
+} from '../controllers/negociosController.js'
 
 const router = express.Router()
 
