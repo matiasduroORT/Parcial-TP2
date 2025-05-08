@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 // const alumnosRouter = require('./routes/alumnosRoutes')
 import alumnosRouter from './routes/alumnosRoutes.js'
 import conectarDB from './config/db.js';
+import ventasRoutes from './routes/ventasRoutes.js'
+import negociosRoutes from './routes/negociosRoutes.js'
 
 dotenv.config()
 
@@ -19,7 +21,8 @@ console.log("EL PUERTO ES: ", PORT);
 app.use(express.json()) // Para que pueda leer JSON
 
 app.use("/", alumnosRouter) // Manejar middlewares, nos permite conectar nuestro server
-
+app.use("/ventas", ventasRoutes);
+app.use("/negocios", negociosRoutes);
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`)

@@ -1,5 +1,6 @@
 import Alumno from "../models/Alumno.js"
 import bcrypt from "bcryptjs";
+import Venta from "../models/Venta.js";
 
 export const home = (req, res) => {
     res.send(`<h1>Home de la API</h1>`)
@@ -62,32 +63,36 @@ export const CrearAlumno = async (req, res) => {
     
 }
 
-export const agregarPokemon = async (req, res) => {
+export const modificarNombre = async (req, res) =>{
+    try {
+        const alumno = await Alumno.findById(req.params.id);
+        const nombreNuevo = req.body.nombre;
+        if(!nombreNuevo){
+            res.status(409).json("No proporcionaste un nombre nuevo")
+        }
+        alumno.nombre = nombreNuevo;
 
-    // req.query = ??
-    // req.params = ??
-
-    const alumno = alumnos.find((alumno) => alumno.id == req.params.id)   
-    
-    // hacer el fetch a la api de pokemon, segun el id de req.query
-    const nombrePokemon = obtenerPokemonNombre('??')
-
-    // alumno.pokemon = 
-
-
+        res.json(alumno)
+        
+    } catch (error) {
+        res.status(500).json({error: "Error al intentar modificar nombre"})
+    }
 
 }
 
-async function obtenerPokemonNombre(id){
+export const alumnosSinComprar = async (req, res) => {
     try {
 
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
-    const data = await res.json()
-    return data.name
- 
-} catch (error) {
-    console.log("El error fue: ", );
-    return null 
-}
-    
+        const alumnos = await Alumno.find();
+        const ventas = await Venta.find();
+
+        const idsConVenta = ventas.map(venta => venta.idAlumno);
+
+        const alumnosSinCompras = alumnos.filter(alumno => !idsConVenta.includes(alumno._id.toString()));
+
+        res.json(alumnosSinCompras);
+
+    } catch (error) {
+        res.status(500).json({ error: "Error al obtener alumnos sin compras" });
+    }
 }
