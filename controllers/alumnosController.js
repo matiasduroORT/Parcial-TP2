@@ -88,17 +88,24 @@ export const modificarNombreAlumno = async (req, res) => {
 
 import mongoose from "mongoose";
 
-
 export const obtenerAlumnosSinCompras = async (req, res) => {
     try {
         // Obtener los IDs de los usuarios que han realizado compras
         const ventas = await Venta.find().select("usuarioId");
-        const alumnosConCompras = ventas.map((venta) => mongoose.Types.ObjectId(venta.usuarioId)); // Asegúrate de que sean ObjectId
+        console.log("Ventas encontradas:", ventas);
+
+        const alumnosConCompras = ventas
+            .filter((venta) => mongoose.isValidObjectId(venta.usuarioId)) // Filtrar IDs válidos
+            .map((venta) => new mongoose.Types.ObjectId(venta.usuarioId)); // Convertir a ObjectId con 'new'
+
+        console.log("IDs de alumnos con compras:", alumnosConCompras);
 
         // Buscar alumnos cuyos IDs no estén en la lista de alumnos con compras
         const alumnosSinCompras = await Alumno.find({
             _id: { $nin: alumnosConCompras },
         });
+
+        console.log("Alumnos sin compras:", alumnosSinCompras);
 
         res.status(200).json(alumnosSinCompras);
     } catch (error) {
