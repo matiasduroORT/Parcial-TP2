@@ -1,20 +1,19 @@
 import express from 'express';
 import {
-    home,
     getAlumnos,
     getAlumnosById,
     CrearAlumno,
-} from '../controllers/alumnosController.js'
+    modificarNombreAlumno,
+    obtenerAlumnosSinCompras,
+} from '../controllers/alumnosController.js';
 
-const router = express.Router()
+const router = express.Router();
 
+// Rutas para alumnos
+router.get('/api/alumnos', getAlumnos); // Obtener todos los alumnos
+router.get('/api/alumnos/sin-compras', obtenerAlumnosSinCompras); // Obtener alumnos que no han realizado compras
+router.get('/api/alumnos/:id', getAlumnosById); // Obtener un alumno por su ID
+router.post('/api/alumnos', CrearAlumno); // Crear uno o varios alumnos
+router.put('/api/alumnos/:id', modificarNombreAlumno); // Modificar el nombre de un alumno por su ID
 
-router.get('/', home)
-router.get('/api/alumnos', getAlumnos)
-router.get('/api/alumnos/:id', getAlumnosById)
-router.post('/api/alumnos', CrearAlumno)
-
-
-
-
-export default router
+export default router;

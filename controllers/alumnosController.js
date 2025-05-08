@@ -1,93 +1,115 @@
-import Alumno from "../models/Alumno.js"
+import Alumno from "../models/Alumno.js";
+import Venta from "../models/Venta.js";
 import bcrypt from "bcryptjs";
 
-export const home = (req, res) => {
-    res.send(`<h1>Home de la API</h1>`)
-}
 
+
+// Método para obtener todos los alumnos de la base de datos
 export const getAlumnos = async (req, res) => {
     try {
-        const alumnos = await Alumno.find()
-        res.json(alumnos)
+        const alumnos = await Alumno.find(); // Busca todos los alumnos
+        res.json(alumnos); // Devuelve los alumnos en formato JSON
     } catch (error) {
-        res.status(500).json({error: "Error al obtener alumnos"})
+        res.status(500).json({ error: "Error al obtener alumnos" }); // Manejo de errores
     }
-}
+};
 
+// Método para obtener un alumno por su ID
 export const getAlumnosById = async (req, res) => {
-
     try {
-        const alumno = await Alumno.findById(req.params.id)
-        if(alumno){
-            res.json(alumno)
-        }else{
-            res.status(404).json({ error: 'Alumno no encontrado'})
+        const alumno = await Alumno.findById(req.params.id); // Busca un alumno por su ID
+        if (alumno) {
+            res.json(alumno); // Devuelve el alumno si se encuentra
+        } else {
+            res.status(404).json({ error: "Alumno no encontrado" }); // Si no se encuentra, devuelve un error 404
         }
     } catch (error) {
-        res.status(500).json({ error: "ID Invalido"})
+        res.status(500).json({ error: "ID Inválido" }); 
     }
+};
 
-}
+export const CrearAlumno = async (req, res) => {
+    const alumnos = Array.isArray(req.body) ? req.body : [req.body]; // Asegurarse de que siempre sea un array
 
-export const CrearAlumno = async (req, res) => {  
-
-    // res.json({
-    //     reqBody: req.body,
-    //     reqParams: req.params,
-    //     reqQuery: req.query,
-    // })
-
-    const { nombre, edad, email, password } = req.body;
-    if(!nombre || !edad || !email || !password){
-        return res.status(400).json({error: "Faltan datos"})
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // const comparada = await bcrypt.compare(password, hashedPassword)
-    
-    const alumno = {
-        nombre,
-        edad,
-        email,
-        password: hashedPassword
+    if (alumnos.length === 0) {
+        return res.status(400).json({ error: "Faltan datos o el formato es incorrecto" });
     }
 
     try {
-        const nuevoAlumno = await Alumno.create(alumno)
-        res.status(201).json(nuevoAlumno)
+        const alumnosCreados = await Promise.all(
+            alumnos.map(async (alumno) => {
+                const { nombre, edad, email, password } = alumno;
+
+                // Validar los campos de cada alumno
+                if (!nombre || !edad || !email || !password) {
+                    throw new Error("Faltan datos en uno de los alumnos");
+                }
+
+                // Hashear la contraseña
+                const hashedPassword = await bcrypt.hash(password, 10);
+
+                return await Alumno.create({
+                    nombre,
+                    edad,
+                    email,
+                    password: hashedPassword,
+                });
+            })
+        );
+
+        res.status(201).json(alumnosCreados.length === 1 ? alumnosCreados[0] : alumnosCreados); // Devuelve un objeto si es uno, o un array si son varios
     } catch (error) {
-        res.status(500).json({error: "Error al crear Alumno"})
+        res.status(500).json({ error: error.message || "Error al crear alumnos" });
     }
-    
-}
+};
 
-export const agregarPokemon = async (req, res) => {
+// Método para modificar el nombre de un alumno por su ID
+export const modificarNombreAlumno = async (req, res) => {
+    const { id } = req.params;
+    const { nombre } = req.body;
 
-    // req.query = ??
-    // req.params = ??
+    // Validación de datos
+    if (!nombre) {
+        return res.status(400).json({ error: "Falta el nombre" });
+    }
 
-    const alumno = alumnos.find((alumno) => alumno.id == req.params.id)   
-    
-    // hacer el fetch a la api de pokemon, segun el id de req.query
-    const nombrePokemon = obtenerPokemonNombre('??')
-
-    // alumno.pokemon = 
-
-
-
-}
-
-async function obtenerPokemonNombre(id){
     try {
+        const alumno = await Alumno.findByIdAndUpdate(id, { nombre }, { new: true }); // Actualiza el nombre del alumno
+        if (alumno) {
+            res.json(alumno); // Devuelve el alumno actualizado
+        } else {
+            res.status(404).json({ error: "Alumno no encontrado" }); // Si no se encuentra, devuelve un error 404
+        }
+    } catch (error) {
+        res.status(500).json({ error: "Error al modificar el nombre" }); // Manejo de errores
+    }
+};
 
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
-    const data = await res.json()
-    return data.name
- 
-} catch (error) {
-    console.log("El error fue: ", );
-    return null 
-}
-    
-}
+
+import mongoose from "mongoose";
+
+export const obtenerAlumnosSinCompras = async (req, res) => {
+    try {
+        // Obtener los IDs de los usuarios que han realizado compras
+        const ventas = await Venta.find().select("usuarioId");
+        console.log("Ventas encontradas:", ventas);
+
+        const alumnosConCompras = ventas
+            .filter((venta) => mongoose.isValidObjectId(venta.usuarioId)) // Filtrar IDs válidos
+            .map((venta) => new mongoose.Types.ObjectId(venta.usuarioId)); // Convertir a ObjectId con 'new'
+
+        console.log("IDs de alumnos con compras:", alumnosConCompras);
+
+        // Buscar alumnos cuyos IDs no estén en la lista de alumnos con compras
+        const alumnosSinCompras = await Alumno.find({
+            _id: { $nin: alumnosConCompras },
+        });
+
+        console.log("Alumnos sin compras:", alumnosSinCompras);
+
+        res.status(200).json(alumnosSinCompras);
+    } catch (error) {
+        console.error("Error al obtener alumnos sin compras:", error);
+        res.status(500).json({ error: "Error al obtener alumnos sin compras" });
+    }
+};

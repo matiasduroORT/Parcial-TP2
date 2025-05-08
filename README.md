@@ -36,3 +36,6 @@ Si ya terminaste o son las 10:00 asegurate de seguir los siguientes pasos para l
 
 
 ## 
+Felipe Barbieri
+En el script/cargarDatos.js lo que hice fue un script para que se puedan cargar los datos borrando los anteriores si existiesen y que cargue estos nuevos.
+En el proyecto lo que hice fue implementar los metodos solicitados, cambiar nombre segun un id, buscar alumnos sin compras, filtrar negocios por storeLocation, buscar alumnos sin compras y asi como crear ventas y buscarlas por id 
