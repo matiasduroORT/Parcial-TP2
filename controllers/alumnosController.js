@@ -62,6 +62,59 @@ export const CrearAlumno = async (req, res) => {
     
 }
 
+
+
+//TO-DO:
+export const ModificarNombre = async (req, res) => {  
+
+    const { nombre } = req.body
+    const { id } = req.params
+
+    if(!nombre){
+        return res.status(400).json({error: "Falta ingresar el nombre"})
+    }
+
+    try {
+        const alumno = await Alumno.findById(id)
+        if (!alumno) {
+            return res.status(404).json({ error: "Alumno no encontrado" })
+        }
+
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            alumno.password = hashedPassword;
+        }
+        if (email) alumno.email = email;
+        if (nombre) alumno.nombre = nombre;
+        if (edad) alumno.edad = edad;
+
+        const alumnoNombreModificado = await alumno.save();
+        res.status(200).json(alumnoNombreModificado)
+    } catch (error) {
+        res.status(500).json({error: "No se puede crear el nuevo Alumno"})
+    }
+    
+}
+
+export const getAlumnosSinCompras = async (req, res) => {
+    try {
+        const alumnos = await Alumno.find();
+        const sales = await Sale.find();
+        
+        const idsConVentas = ventas.map(venta => venta.idUsuario.toString());
+
+        const alumnosSinCompras = alumnos.filter(alumno => {
+            return !idsConVentas.includes(alumno._id.toString());
+        });
+
+        res.status(200).json(alumnosSinCompras);
+    } catch (error) {
+        res.status(500).json({ error: "Ocurrio un error" });
+    }
+}
+
+
+
 export const agregarPokemon = async (req, res) => {
 
     // req.query = ??
